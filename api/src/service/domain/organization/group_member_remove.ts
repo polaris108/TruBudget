@@ -14,23 +14,23 @@ interface Repository {
   getGroupEvents(): Promise<BusinessEvent[]>;
 }
 
-export async function removeMember(
+export async function removeMembers(
   ctx: Ctx,
   issuer: ServiceUser,
   groupId: Group.Id,
-  newMember: Group.Member,
+  members: Group.Member[],
   repository: Repository,
 ): Promise<Result.Type<BusinessEvent>> {
   const groupEvents = await repository.getGroupEvents();
   const { groups } = sourceGroups(ctx, groupEvents);
 
-  const group = groups.find(x => x.id === groupId);
+  const group = groups.find((x) => x.id === groupId);
   if (group === undefined) {
     return new NotFound(ctx, "group", groupId);
   }
 
   // Create the new event:
-  const memberRemoved = GroupMemberRemoved.createEvent(ctx.source, issuer.id, groupId, newMember);
+  const memberRemoved = GroupMemberRemoved.createEvent(ctx.source, issuer.id, groupId, members);
   if (Result.isErr(memberRemoved)) {
     return new VError(memberRemoved, "failed to create group member removed event");
   }

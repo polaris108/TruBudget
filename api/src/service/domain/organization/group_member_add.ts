@@ -14,26 +14,26 @@ interface Repository {
   getGroupEvents(): Promise<BusinessEvent[]>;
 }
 
-export async function addMember(
+export async function addMembers(
   ctx: Ctx,
   issuer: ServiceUser,
   groupId: Group.Id,
-  newMember: Group.Member,
+  newMembers: Group.Member[],
   repository: Repository,
 ): Promise<Result.Type<BusinessEvent>> {
   const groupEvents = await repository.getGroupEvents();
   const { groups } = sourceGroups(ctx, groupEvents);
 
   // Check if group exists
-  const group = groups.find(x => x.id === groupId);
+  const group = groups.find((x) => x.id === groupId);
   if (group === undefined) {
     return new NotFound(ctx, "group", groupId);
   }
 
   // Create the new event:
-  const memberAdded = GroupMemberAdded.createEvent(ctx.source, issuer.id, groupId, newMember);
-  if (Result.isErr(memberAdded)) {
-    return new VError(memberAdded, "failed to create group added event");
+  const membersAdded = GroupMemberAdded.createEvent(ctx.source, issuer.id, groupId, newMembers);
+  if (Result.isErr(membersAdded)) {
+    return new VError(membersAdded, "failed to create group added event");
   }
   // Check authorization (if not root):
   if (issuer.id !== "root") {
@@ -44,10 +44,10 @@ export async function addMember(
   }
 
   // Check that the new event is indeed valid:
-  const { errors } = sourceGroups(ctx, groupEvents.concat([memberAdded]));
+  const { errors } = sourceGroups(ctx, groupEvents.concat([membersAdded]));
   if (errors.length > 0) {
-    return new InvalidCommand(ctx, memberAdded, errors);
+    return new InvalidCommand(ctx, membersAdded, errors);
   }
 
-  return memberAdded;
+  return membersAdded;
 }

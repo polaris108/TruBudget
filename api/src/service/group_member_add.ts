@@ -8,21 +8,22 @@ import * as GroupMemberAdd from "./domain/organization/group_member_add";
 import { ServiceUser } from "./domain/organization/service_user";
 import { store } from "./store";
 
-export async function addMember(
+export async function addMembers(
   conn: ConnToken,
   ctx: Ctx,
   serviceUser: ServiceUser,
   groupId: Group.Id,
-  newMember: Group.Member,
+  newMembers: Group.Member[],
 ): Promise<Result.Type<void>> {
-  const memberAddResult = await Cache.withCache(conn, ctx, cache =>
-    GroupMemberAdd.addMember(ctx, serviceUser, groupId, newMember, {
+  const memberAddResult = await Cache.withCache(conn, ctx, (cache) =>
+    GroupMemberAdd.addMembers(ctx, serviceUser, groupId, newMembers, {
       getGroupEvents: async () => {
         return cache.getGroupEvents();
       },
     }),
   );
-  if (Result.isErr(memberAddResult)) return new VError(memberAddResult, "failed to add group member");
+  if (Result.isErr(memberAddResult))
+    return new VError(memberAddResult, "failed to add group member");
   const memberAddEvent = memberAddResult;
 
   await store(conn, ctx, memberAddEvent);

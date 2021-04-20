@@ -8,22 +8,23 @@ import * as GroupMemberRemove from "./domain/organization/group_member_remove";
 import { ServiceUser } from "./domain/organization/service_user";
 import { store } from "./store";
 
-export async function removeMember(
+export async function removeMembers(
   conn: ConnToken,
   ctx: Ctx,
   serviceUser: ServiceUser,
   groupId: Group.Id,
-  newMember: Group.Member,
+  members: Group.Member[],
 ): Promise<Result.Type<void>> {
-  const memberRemoveResult = await Cache.withCache(conn, ctx, cache =>
-    GroupMemberRemove.removeMember(ctx, serviceUser, groupId, newMember, {
+  const memberRemoveResult = await Cache.withCache(conn, ctx, (cache) =>
+    GroupMemberRemove.removeMembers(ctx, serviceUser, groupId, members, {
       getGroupEvents: async () => {
         return cache.getGroupEvents();
       },
     }),
   );
 
-  if (Result.isErr(memberRemoveResult)) return new VError(memberRemoveResult, "failed to remove group member");
+  if (Result.isErr(memberRemoveResult))
+    return new VError(memberRemoveResult, "failed to remove group member");
   const memberAddEvent = memberRemoveResult;
 
   await store(conn, ctx, memberAddEvent);
