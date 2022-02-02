@@ -1,4 +1,6 @@
-# Create a New Network with Docker-Compose
+<!-- TODO check this doc -->
+
+# Create a New Network with Docker
 
 This guide describes how to start a new instance of Trubudget using docker-compose.
 
