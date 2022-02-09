@@ -31,7 +31,7 @@ Depending on the Trubudget setup environment variables
 | API_HOST                    | no       |                           | Used to build the URL to the master-node's API when requesting network access. (The IP addresses are usually the same as for the P2P host address).                                                                                                                                                                                                 |
 | API_PORT                    | no       | 8080                      | The port used to connect to the master-node's api.                                                                                                                                                                                                                                                                                                  |
 | API_PROTO                   | no       | http                      | The Protocol which should be used to connect to the master-node's api. (http, https)                                                                                                                                                                                                                                                                |
-| EXTERNAL_IP                 | no       |                           | The IP address with which the current node can be reached. The variable is forwarded to the mutlichain dameon as `externalip` argument. <br/>Example: If you have a VM running on 52.52.52.52 and you want to start a slave node from this VM to connect to a master running on 53.53.53.53, you set the `EXTERNAL_IP` to 52.52.52.52 on this node. |
+| EXTERNAL_IP                 | no       |                           | The IP address with which the current node can be reached. The variable is forwarded to the mutlichain daemon as `externalip` argument. <br/>Example: If you have a VM running on 52.52.52.52 and you want to start a slave node from this VM to connect to a master running on 53.53.53.53, you set the `EXTERNAL_IP` to 52.52.52.52 on this node. |
 | LOG_LEVEL                   | no       | info                      | Defines the log output. Supported levels are `trace`, `debug`, `info`, `warn`, `error`, `fatal`                                                                                                                                                                                                                                                     |
 | MULTICHAIN_DIR              | no       | /root                     | The path to the multichain folder where the blockchain data is persisted. For installations via `docker-compose`, this refers to the path within the docker container of the blockchain. For bare metal installations, this refers to the path on the machine the blockchain is running on.                                                         |
 | ORGANIZATION                | yes      | -                         | In the blockchain network, each node is represented by its organization name. This environment variable sets this organization name. It is used to create the organization stream on the blockchain.                                                                                                                                                |
@@ -78,7 +78,7 @@ Depending on the Trubudget setup environment variables
 
 ## Lifecycle
 
-As described before: The Trubudget Blockchain is created one by a master, which then grants slaves access on demand.
+As described before: The Trubudget Blockchain is created by a master, then grants slaves access on demand.
 
 1.  Start Master-Node of Trubudget Blockchain (Master sets chain configurations for network and has admit privileges)
 1.  Start API (Master-API)
@@ -86,11 +86,11 @@ As described before: The Trubudget Blockchain is created one by a master, which 
 1.  Start Slave-Node(s)
 1.  Slave-Node will try to join the network by connection to the master-node
     1.  If mutual authentication is enabled, the blockchain can only request to access the network when providing a valid certificate. In case the certificate is not valid, the Master API will reject the node immediately
-1.  Slave-Node attempt to access the network will be rejected because they have not be granted access
-1.  Slave-Node frequests to be granted access to the network by sending its blockchain-address and information about the Organization operating the node to the Master-API
+1.  Slave-Node attempt to access the network will be rejected because they have not been granted access
+1.  Slave-Node requests to be granted access to the network by sending its blockchain-address and information about the Organization operating the node to the Master-API
 1.  Eventually, Master-API grants read/write (not admin) access to the network for the supplied address
 1.  Slave-Node retries to join the network
-1.  Slave-Node is granted access and syncronized blockchain data
+1.  Slave-Node is granted for access and synchronizes blockchain data
 
 ## Master vs. Slave Node
 
@@ -110,7 +110,7 @@ More information about mutual authentication can be found [here](https://www.clo
 
 ## Enable email notifications
 
-If `EMAIL_SERVICE` is set to "ENABLED" and `EMAIL_HOST` and `EMAIL_PORT` are set too the multichain-feed is attached to the multichaindaemon and the notification-watcher starts watching the `NOTIFICATION_PATH` for new incoming notification transactions. In other words The blockchain starts the background processes to send user ids to the email-notification service. `EMAIL_SSL` is a flag to define if the connection of the blockchain application and the email-service shall be https(true) or http(false).
+If `EMAIL_SERVICE` is set to "ENABLED" and `EMAIL_HOST` and `EMAIL_PORT` are set too the multichain-feed is attached to the multichain-daemon and the notification-watcher starts watching the `NOTIFICATION_PATH` for new incoming notification transactions. In other words The blockchain starts the background processes to send user ids to the email-notification service. `EMAIL_SSL` is a flag to define if the connection of the blockchain application and the email-service shall be https(true) or http(false).
 
 The easiest way to get started is to use our pre-set `docker-compose` cluster available in the `email-notification` project which starts the whole TruBudget application including all email components(that means you need to install [Docker](https://www.docker.com/community-edition#/download)).
 The pre-set cluster contains:
@@ -133,6 +133,6 @@ More details about the email notification service can be found in the [email not
 ## Disable email notifications
 
 To disable email notifications for blockchain simply set the `EMAIL_SERVICE` to "DISABLED" or unset it.
-If disabled the multichain-feed is not applied to the multichain-deamon and notifications are not created.
+If disabled the multichain-feed is not applied to the multichain-daemon and notifications are not created.
 
-**Hint:** To prevent the frontend requesting an email-notifcations readiness call simply unset the email notification service environment variable in the frontend. More details can be found in the [frontend documentation](../frontend/README.md#email-notifications)
+**Hint:** To prevent the frontend requesting an email-notifications readiness call simply unset the email notification service environment variable in the frontend. More details can be found in the [frontend documentation](../frontend/README.md#email-notifications)
