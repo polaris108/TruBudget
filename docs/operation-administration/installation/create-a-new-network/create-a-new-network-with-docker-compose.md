@@ -23,7 +23,7 @@ The deployments are abstracted through shell scripts. We expect you to have a UN
     - [Verify version](#verify-version-of-trubudget)
     - [Clean installation](#clean-installation)
   - [Create a new Blockchain network](#create-a-new-blockchain-network)
-  - [Connect to an existing Blockchain network](#connect-to-an-existing-blockchain-network)
+  - [Create a new Blockchain network with two organization](#create-a-new-blockchain-network-with-two-organization)
     - [Example](#example)
 
 ## Prerequisites
@@ -104,7 +104,7 @@ The **frontend** should be accessible via port 3000 on the server that it is run
 
 The **API Swagger documentation** should be accessible via port 8080 on the server that it is running on: http://localhost:8080/api/documentation/static/index.html
 
-## Connect to an existing Blockchain network
+## Create a new Blockchain network with two organization
 
 To connect two blockchains, you need to define exactly one master node and one or more slave nodes. The define a slave node, you must set the correct [Environmental variables](https://github.com/openkfw/TruBudget/blob/master/blockchain/README.md#environment-variables) in a blockchain node in order to
 
